@@ -11,43 +11,66 @@ import seedData from "./seedData";
 class EventDashboard extends Component {
   state = {
     events: seedData,
-    isOpen: false
+    isOpen: false,
+    selectedEvent: null
   };
 
-  handleIsOpenToggle = () => {
-    this.setState(({ isOpen }) => ({
-      isOpen: !isOpen
-    }));
+  // handleIsOpenToggle = () => {
+  //   this.setState(({ isOpen }) => ({
+  //     isOpen: !isOpen
+  //   }));
+  // };
+
+  handleCreateFormOpen = () => {
+    this.setState({
+      isOpen: true,
+      selectedEvent: null
+    });
+  };
+
+  handleFormCancel = () => {
+    this.setState({
+      isOpen: false
+    });
   };
 
   handleCreateEvent = newEvent => {
     newEvent.id = cuid();
     newEvent.hostPhotoUrl = "../../../../public/assets/logo.png";
+
     this.setState(({ events }) => ({
       events: [...events, newEvent],
       isOpen: false
     }));
   };
 
+  handleSelectEvent = event => {
+    this.setState({
+      selectedEvent: event,
+      isOpen: true
+    });
+  };
+
   render() {
-    const { events, isOpen } = this.state;
+    const { events, isOpen, selectedEvent } = this.state;
 
     return (
       <div>
         <Grid>
           <Grid.Column width={10}>
-            <EventList events={events} />
+            <EventList events={events} selectEvent={this.handleSelectEvent}/>
           </Grid.Column>
           <Grid.Column width={6}>
             <Button
-              onClick={this.handleIsOpenToggle}
+              onClick={this.handleCreateFormOpen}
               positive
               content='Create Event'
             />
             {isOpen && (
               <EventForm
+                selectedEvent={selectedEvent}
                 createEvent={this.handleCreateEvent}
-                cancelFormOpen={this.handleIsOpenToggle}
+                cancelFormOpen={this.handleFormCancel}
               />
             )}
           </Grid.Column>
