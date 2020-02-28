@@ -15,13 +15,21 @@ class EventForm extends Component {
     if (this.props.selectedEvent != null) {
       this.setState({
         ...this.props.selectedEvent
-      })
+      });
     }
   }
 
   handleFormSubmit = event => {
     event.preventDefault();
-    this.props.createEvent(this.state);
+
+    // we are checking if the event has an ID, because that means it's populated
+    // so the button does update the event when fired
+    // else, it means the form is empty, so button should be used for create only
+    if (this.state.id) {
+      this.props.updateEvent(this.state);
+    } else {
+      this.props.createEvent(this.state);
+    }
   };
 
   // destructure event and then event.target, taking name and value out of it
