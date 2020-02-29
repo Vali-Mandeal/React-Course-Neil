@@ -3,8 +3,8 @@ import { Grid, Button } from "semantic-ui-react";
 
 import cuid from "cuid";
 
-import EventList from "../../event/EventList/EventList";
-import EventForm from "../../event/EventForm/EventForm";
+import EventList from "../../events/EventList/EventList";
+import EventForm from "../../events/EventForm/EventForm";
 
 import seedData from "./seedData";
 
@@ -65,11 +65,11 @@ class EventDashboard extends Component {
     }));
   };
 
-  handleDeleteEvent = (id) => {
-    this.setState(({events}) => ({
+  handleDeleteEvent = id => {
+    this.setState(({ events }) => ({
       events: events.filter(event => event.id !== id)
-    }))
-  }
+    }));
+  };
 
   render() {
     const { events, isOpen, selectedEvent } = this.state;
@@ -78,7 +78,11 @@ class EventDashboard extends Component {
       <div>
         <Grid>
           <Grid.Column width={10}>
-            <EventList events={events} selectEvent={this.handleSelectEvent} deleteEvent={this.handleDeleteEvent}/>
+            <EventList
+              events={events}
+              selectEvent={this.handleSelectEvent}
+              deleteEvent={this.handleDeleteEvent}
+            />
           </Grid.Column>
           <Grid.Column width={6}>
             <Button
