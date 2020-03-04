@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Grid, Button } from "semantic-ui-react";
+import { createEvent, updateEvent, deleteEvent } from '../eventActions';
 
 import cuid from "cuid";
 
@@ -11,17 +12,17 @@ const mapState = state => ({
   events: state.events
 });
 
+const actions = {
+  createEvent,
+  updateEvent,
+  deleteEvent
+}
+
 class EventDashboard extends Component {
   state = {
     isOpen: false,
     selectedEvent: null
   };
-
-  // handleIsOpenToggle = () => {
-  //   this.setState(({ isOpen }) => ({
-  //     isOpen: !isOpen
-  //   }));
-  // };
 
   handleCreateFormOpen = () => {
     this.setState({
@@ -40,8 +41,9 @@ class EventDashboard extends Component {
     newEvent.id = cuid();
     newEvent.hostPhotoUrl = "../../../../public/assets/logo.png";
 
+    this.props.createEvent(newEvent);
+
     this.setState(({ events }) => ({
-      events: [...events, newEvent],
       isOpen: false
     }));
   };
@@ -54,23 +56,16 @@ class EventDashboard extends Component {
   };
 
   handleUpdateEvent = updatedEvent => {
+    this.props.updateEvent(updatedEvent);
+
     this.setState(({ events }) => ({
-      events: events.map(event => {
-        if (event.id === updatedEvent.id) {
-          return { ...updatedEvent };
-        } else {
-          return event;
-        }
-      }),
       isOpen: false,
       selectedEvent: null
     }));
   };
 
   handleDeleteEvent = id => {
-    this.setState(({ events }) => ({
-      events: events.filter(event => event.id !== id)
-    }));
+    this.props.deleteEvent(id);
   };
 
   render() {
@@ -108,4 +103,4 @@ class EventDashboard extends Component {
   }
 }
 
-export default connect(mapState)(EventDashboard);
+export default connect(mapState, actions)(EventDashboard);
