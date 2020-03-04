@@ -1,4 +1,4 @@
-const eventsFromDashBoard = [
+const eventListData = [
     {
       id: '1',
       title: 'Trip to Tower of London',
@@ -49,4 +49,4 @@ const eventsFromDashBoard = [
     }
   ]
 
-  export default eventsFromDashBoard;
+  export default eventListData;
