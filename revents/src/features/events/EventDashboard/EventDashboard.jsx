@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Grid, Button } from "semantic-ui-react";
 
 import cuid from "cuid";
@@ -6,11 +7,12 @@ import cuid from "cuid";
 import EventList from "../../events/EventList/EventList";
 import EventForm from "../../events/EventForm/EventForm";
 
-import seedData from "./seedData";
+const mapState = state => ({
+  events: state.events
+});
 
 class EventDashboard extends Component {
   state = {
-    events: seedData,
     isOpen: false,
     selectedEvent: null
   };
@@ -72,8 +74,8 @@ class EventDashboard extends Component {
   };
 
   render() {
-    const { events, isOpen, selectedEvent } = this.state;
-
+    const { isOpen, selectedEvent } = this.state;
+    const { events } = this.props;
     return (
       <div>
         <Grid>
@@ -106,4 +108,4 @@ class EventDashboard extends Component {
   }
 }
 
-export default EventDashboard;
+export default connect(mapState)(EventDashboard);
