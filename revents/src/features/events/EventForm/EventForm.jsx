@@ -3,6 +3,10 @@ import { connect } from "react-redux";
 
 import { Segment, Form, Button } from "semantic-ui-react";
 
+import cuid from "cuid";
+
+import { createEvent, updateEvent } from "../eventActions";
+
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
 
@@ -20,7 +24,12 @@ const mapState = (state, ownProps) => {
 
   return {
     event
-  }
+  };
+};
+
+const actions = {
+  createEvent,
+  updateEvent
 };
 
 class EventForm extends Component {
@@ -34,16 +43,23 @@ class EventForm extends Component {
     }
   }
 
-  handleFormSubmit = event => {
-    event.preventDefault();
+  handleFormSubmit = evt => {
+    evt.preventDefault();
 
     // we are checking if the event has an ID, because that means it's populated
     // so the button does update the event when fired
     // else, it means the form is empty, so button should be used for create only
     if (this.state.id) {
       this.props.updateEvent(this.state);
+      this.props.history.push(`/events/${this.state.id}`);
     } else {
-      this.props.createEvent(this.state);
+      const newEvent = {
+        ...this.state,
+        id: cuid(),
+        hostPhotoURL: "../../../../public/assets/user.png"
+      };
+      this.props.createEvent(newEvent);
+      this.props.history.push(`/events`);
     }
   };
 
@@ -118,4 +134,4 @@ class EventForm extends Component {
   }
 }
 
-export default connect(mapState)(EventForm);
+export default connect(mapState, actions)(EventForm);
