@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Segment, Item, Label, List } from "semantic-ui-react";
+import { Segment, Item, Label } from "semantic-ui-react";
 
 const EventDetailedSidebar = ({ attendees }) => {
   const isHost = false;
