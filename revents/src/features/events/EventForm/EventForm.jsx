@@ -9,6 +9,7 @@ import { createEvent, updateEvent } from "../eventActions";
 import TextInput from "../../../app/form/TextInput";
 import TextArea from "./../../../app/form/TextArea";
 import SelectInput from "./../../../app/form/SelectInput";
+import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from "revalidate";
 
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
@@ -28,6 +29,17 @@ const actions = {
   createEvent,
   updateEvent
 };
+
+const validate = combineValidators({
+  title: isRequired({message: 'The event title is required'}),
+  category: isRequired({message: 'The category is required'}),
+  description: composeValidators(
+    isRequired({message: 'Please enter a description'}),
+    hasLengthGreaterThan(4)({message:'Description needs to be at least 5 characters'})
+  )(),
+  city: isRequired('city'),
+  venue: isRequired('venue')
+})
 
 const category = [
   { key: "drinks", text: "Drinks", value: "drinks" },
@@ -59,7 +71,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { history, initialValues } = this.props;
+    const { history, initialValues, invalid, submitting, pristine } = this.props;
 
     return (
       <Grid>
@@ -105,7 +117,8 @@ class EventForm extends Component {
                 placeholder='Event date'
               />
 
-              <Button positive type='submit'>
+              <Button disabled={invalid || submitting || pristine}
+              positive type='submit'>
                 Submit
               </Button>
               <Button
@@ -129,4 +142,4 @@ class EventForm extends Component {
 export default connect(
   mapState,
   actions
-)(reduxForm({ form: "eventForm" })(EventForm));
+)(reduxForm({ form: "eventForm", validate })(EventForm));
