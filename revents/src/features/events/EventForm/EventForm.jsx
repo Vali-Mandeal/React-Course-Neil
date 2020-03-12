@@ -13,20 +13,14 @@ import SelectInput from "./../../../app/form/SelectInput";
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
 
-  let event = {
-    title: "",
-    date: "",
-    city: "",
-    venue: "",
-    hostedBy: ""
-  };
+  let event = {};
 
   if (eventId && state.events.length > 0) {
     event = state.events.find(event => event.id === eventId);
   }
 
   return {
-    event
+    initialValues: event
   };
 };
 
@@ -36,42 +30,46 @@ const actions = {
 };
 
 const category = [
-    {key: 'drinks', text: 'Drinks', value: 'drinks'},
-    {key: 'culture', text: 'Culture', value: 'culture'},
-    {key: 'film', text: 'Film', value: 'film'},
-    {key: 'food', text: 'Food', value: 'food'},
-    {key: 'music', text: 'Music', value: 'music'},
-    {key: 'travel', text: 'Travel', value: 'travel'},
+  { key: "drinks", text: "Drinks", value: "drinks" },
+  { key: "culture", text: "Culture", value: "culture" },
+  { key: "film", text: "Film", value: "film" },
+  { key: "food", text: "Food", value: "food" },
+  { key: "music", text: "Music", value: "music" },
+  { key: "travel", text: "Travel", value: "travel" }
 ];
 
 class EventForm extends Component {
-  handleFormSubmit = evt => {
-    evt.preventDefault();
-
+  onFormSubmit = values => {
     // we are checking if the event has an ID, because that means it's populated
     // so the button does update the event when fired
     // else, it means the form is empty, so button should be used for create only
-    if (this.state.id) {
-      this.props.updateEvent(this.state);
-      this.props.history.push(`/events/${this.state.id}`);
+    if (this.props.initialValues.id) {
+      this.props.updateEvent(values);
+      this.props.history.push(`/events/${this.props.initialValues.id}`);
     } else {
       const newEvent = {
-        ...this.state,
+        ...values,
         id: cuid(),
-        hostPhotoURL: "../../../../public/assets/user.png"
+        hostPhotoURL: "/assets/user.png",
+        hostedBy: "Bob"
       };
       this.props.createEvent(newEvent);
-      this.props.history.push(`/events`);
+      this.props.history.push(`/events/${newEvent.id}`);
     }
   };
 
   render() {
+    const { history, initialValues } = this.props;
+
     return (
       <Grid>
         <Grid.Column width={10}>
           <Segment>
             <Header sub color='teal' content='event details' />
-            <Form onSubmit={this.handleFormSubmit} autoComplete='off'>
+            <Form
+              onSubmit={this.props.handleSubmit(this.onFormSubmit)}
+              autoComplete='off'
+            >
               <Field
                 name='title'
                 component={TextInput}
@@ -110,7 +108,14 @@ class EventForm extends Component {
               <Button positive type='submit'>
                 Submit
               </Button>
-              <Button onClick={this.props.history.goBack} type='button'>
+              <Button
+                onClick={
+                  initialValues.id
+                    ? () => history.push(`/events/${initialValues.id}`)
+                    : () => history.push("/events")
+                }
+                type='button'
+              >
                 Cancel
               </Button>
             </Form>
