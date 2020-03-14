@@ -10,6 +10,7 @@ import TextInput from "../../../app/form/TextInput";
 import TextArea from "./../../../app/form/TextArea";
 import SelectInput from "./../../../app/form/SelectInput";
 import { composeValidators, combineValidators, isRequired, hasLengthGreaterThan } from "revalidate";
+import DateInput from './../../../app/form/DateInput';
 
 const mapState = (state, ownProps) => {
   const eventId = ownProps.match.params.id;
@@ -38,7 +39,8 @@ const validate = combineValidators({
     hasLengthGreaterThan(4)({message:'Description needs to be at least 5 characters'})
   )(),
   city: isRequired('city'),
-  venue: isRequired('venue')
+  venue: isRequired('venue'),
+  date: isRequired('date')
 })
 
 const category = [
@@ -113,7 +115,10 @@ class EventForm extends Component {
               />
               <Field
                 name='date'
-                component={TextInput}
+                component={DateInput}
+                dateFormat='dd LLL yyyy h:mm a'
+                showTimeSelect
+                timeFormat='HH:mm'
                 placeholder='Event date'
               />
 
